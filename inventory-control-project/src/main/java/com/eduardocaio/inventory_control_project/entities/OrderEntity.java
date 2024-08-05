@@ -2,6 +2,10 @@ package com.eduardocaio.inventory_control_project.entities;
 
 import java.util.Date;
 
+import org.springframework.beans.BeanUtils;
+
+import com.eduardocaio.inventory_control_project.dto.OrderDTO;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,6 +34,13 @@ public class OrderEntity {
         this.id = id;
         this.moment = moment;
         this.client = client;
+    }
+
+    public OrderEntity(OrderDTO order){
+        BeanUtils.copyProperties(order, this);
+        if(order != null && order.getClient() != null){
+            this.client = new UserEntity(order.getClient());
+        }
     }
 
     public Long getId() {

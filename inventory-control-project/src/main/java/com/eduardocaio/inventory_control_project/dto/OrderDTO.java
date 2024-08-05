@@ -23,6 +23,9 @@ public class OrderDTO {
 
     public OrderDTO(OrderEntity order){
         BeanUtils.copyProperties(order, this);
+        if(order != null && order.getClient() != null){
+            this.client = new UserDTO(order.getClient());
+        }
     }
 
 }
