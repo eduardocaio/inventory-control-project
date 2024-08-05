@@ -1,5 +1,8 @@
 package com.eduardocaio.inventory_control_project.entities;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.beans.BeanUtils;
 
 import com.eduardocaio.inventory_control_project.dto.UserDTO;
@@ -9,6 +12,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.NoArgsConstructor;
 
@@ -32,6 +36,9 @@ public class UserEntity {
 
     @Column(nullable = false, unique = true)
     private String username;
+
+    @OneToMany(mappedBy = "client")
+    private Set<OrderEntity> orders = new HashSet<>();
 
     public UserEntity(Long id, String name, String password, String email, String username) {
         this.id = id;
