@@ -3,6 +3,10 @@ package com.eduardocaio.inventory_control_project.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.beans.BeanUtils;
+
+import com.eduardocaio.inventory_control_project.dto.CategoryDTO;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,6 +32,10 @@ public class CategoryEntity {
     public CategoryEntity(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public CategoryEntity(CategoryDTO category){
+        BeanUtils.copyProperties(category, this);
     }
 
     public Long getId() {
