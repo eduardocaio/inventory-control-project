@@ -25,4 +25,15 @@ public class UserService {
         userRepository.save(userEntity);
     }
 
+    public UserDTO update(UserDTO user, Long id){
+        UserEntity userEntity = new UserEntity(user);
+        userEntity.setId(id);
+        return new UserDTO(userRepository.save(userEntity));
+    }
+
+    public void delete(Long id){
+        UserEntity user = userRepository.findById(id).get();
+        userRepository.delete(user);
+    }
+
 }
