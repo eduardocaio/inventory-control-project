@@ -4,6 +4,7 @@ import org.springframework.beans.BeanUtils;
 
 import com.eduardocaio.inventory_control_project.dto.InventoryDTO;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -37,8 +38,8 @@ public class InventoryEntity {
 
     public InventoryEntity(InventoryDTO inventory) {
         BeanUtils.copyProperties(inventory, this);
-        if (inventory != null && inventory.getProductId() != null) {
-            this.product = new ProductEntity(inventory.getProductId());
+        if (inventory != null && inventory.getProduct() != null) {
+            this.product = new ProductEntity(inventory.getProduct());
             this.product_name = product.getName();
         }
     }

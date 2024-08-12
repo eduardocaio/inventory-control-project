@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,6 +22,11 @@ public class InventoryController {
     @GetMapping
     public List<InventoryDTO> findAll(){
         return inventoryService.findAll();
+    }
+    
+    @PostMapping
+    public void insert(@RequestBody InventoryDTO inventory){
+        inventoryService.insert(inventory);
     }
 
 }
