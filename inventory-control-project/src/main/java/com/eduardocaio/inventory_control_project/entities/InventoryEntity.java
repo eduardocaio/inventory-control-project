@@ -4,7 +4,6 @@ import org.springframework.beans.BeanUtils;
 
 import com.eduardocaio.inventory_control_project.dto.InventoryDTO;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -70,6 +69,10 @@ public class InventoryEntity {
 
     public void removeItems(int quantity){
         this.quantity -= quantity;
+    }
+
+    public void addItems(int quantity){
+        this.quantity += quantity;
     }
 
     @Override

@@ -37,8 +37,14 @@ public class InventoryController {
         inventoryService.insert(inventory);
     }
 
-    @GetMapping(value = "/removeItems/{id}/{quantity}")
+    @PutMapping(value = "/removeItems/{id}/{quantity}")
     public ResponseEntity<InventoryDTO> removeItems(@PathVariable("id") Long id, @PathVariable("quantity") int quantity){
         return ResponseEntity.ok().body(inventoryService.removeItems(id, quantity));
     }
+
+    @PutMapping(value = "/addItems/{id}/{quantity}")
+    public ResponseEntity<InventoryDTO> addItems(@PathVariable("id") Long id, @PathVariable("quantity") int quantity){
+        return ResponseEntity.ok().body(inventoryService.addItems(id, quantity));
+    }
+
 }

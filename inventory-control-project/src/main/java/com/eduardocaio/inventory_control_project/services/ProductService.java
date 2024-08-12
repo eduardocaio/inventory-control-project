@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.eduardocaio.inventory_control_project.dto.CategoryDTO;
 import com.eduardocaio.inventory_control_project.dto.ProductDTO;
-import com.eduardocaio.inventory_control_project.entities.CategoryEntity;
 import com.eduardocaio.inventory_control_project.entities.ProductEntity;
 import com.eduardocaio.inventory_control_project.repositories.CategoryRepository;
 import com.eduardocaio.inventory_control_project.repositories.ProductRepository;
