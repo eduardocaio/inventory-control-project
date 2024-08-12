@@ -68,6 +68,10 @@ public class InventoryEntity {
         this.product_name = product.getName();
     }
 
+    public void removeItems(int quantity){
+        this.quantity -= quantity;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;

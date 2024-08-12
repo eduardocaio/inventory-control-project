@@ -28,11 +28,26 @@ public class InventoryService {
         return inventory.stream().map(InventoryDTO::new).toList();
     }
 
+    public InventoryDTO findById(Long id){
+        return new InventoryDTO(inventoryRepository.findById(id).get());
+    }
+
     public void insert(InventoryDTO inventory){
         ProductEntity product = productRepository.findById(inventory.getProduct().getId()).get();
         InventoryEntity inventoryEntity = new InventoryEntity(inventory);
         inventoryEntity.setProduct(product);
         inventoryRepository.save(inventoryEntity);
     }
+
+    public InventoryDTO removeItems(Long id, int quantity){
+        InventoryEntity item = inventoryRepository.findById(id).get();
+        if(item.getQuantity() >= quantity){
+            item.removeItems(quantity);
+        }
+        inventoryRepository.save(item);
+        return new InventoryDTO(item);
+    }
+
+    
 
 }
