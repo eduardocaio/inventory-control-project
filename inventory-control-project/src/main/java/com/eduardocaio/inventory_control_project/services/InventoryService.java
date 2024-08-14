@@ -4,12 +4,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.eduardocaio.inventory_control_project.dto.InventoryDTO;
 import com.eduardocaio.inventory_control_project.entities.InventoryEntity;
 import com.eduardocaio.inventory_control_project.entities.ProductEntity;
 import com.eduardocaio.inventory_control_project.repositories.InventoryRepository;
 import com.eduardocaio.inventory_control_project.repositories.ProductRepository;
+
 
 @Service
 public class InventoryService {
@@ -36,8 +38,9 @@ public class InventoryService {
         inventoryRepository.save(inventoryEntity);
     }
 
+    @Transactional
     public InventoryDTO removeItems(Long id, int quantity) {
-        InventoryEntity item = inventoryRepository.findById(id).get();
+        InventoryEntity item = inventoryRepository.findByIdWithLock(id).get();
         if (item.getQuantity() >= quantity) {
             item.removeItems(quantity);
         }
