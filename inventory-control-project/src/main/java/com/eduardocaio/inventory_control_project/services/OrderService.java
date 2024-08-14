@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.eduardocaio.inventory_control_project.dto.OrderDTO;
+import com.eduardocaio.inventory_control_project.dto.OrderItemDTO;
 import com.eduardocaio.inventory_control_project.entities.OrderEntity;
+import com.eduardocaio.inventory_control_project.entities.OrderItemEntity;
+import com.eduardocaio.inventory_control_project.repositories.OrderItemRepository;
 import com.eduardocaio.inventory_control_project.repositories.OrderRepository;
 
 @Service
@@ -15,9 +18,21 @@ public class OrderService {
     @Autowired
     OrderRepository orderRepository;
 
+    @Autowired
+    OrderItemRepository orderItemRepository;
+
     public List<OrderDTO> findAll(){
         List<OrderEntity> orders = orderRepository.findAll();
         return orders.stream().map(OrderDTO::new).toList();
     }
 
-}
+    public void create(OrderDTO order){
+        for (OrderItemDTO item : order.getOrderItem()) {
+            orderItemRepository.save(new OrderItemEntity(item));
+        }
+
+        orderRepository.save(new OrderEntity(order));
+
+        }
+    }
+

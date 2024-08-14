@@ -1,10 +1,14 @@
 package com.eduardocaio.inventory_control_project.entities;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 
 import com.eduardocaio.inventory_control_project.dto.OrderDTO;
+import com.eduardocaio.inventory_control_project.dto.OrderItemDTO;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,12 +16,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "tb_order")
 @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class OrderEntity {
 
     @Id
@@ -30,17 +37,25 @@ public class OrderEntity {
     @JoinColumn(name = "client_id")
     private UserEntity client;
 
-    public OrderEntity(Long id, Date moment, UserEntity client) {
+    @OneToMany(mappedBy = "order")
+    private Set<OrderItemEntity> orderItems = new HashSet<>();
+
+    public OrderEntity(Long id, Date moment, UserEntity client, Set<OrderItemEntity> orderItems) {
         this.id = id;
         this.moment = moment;
         this.client = client;
+        this.orderItems = orderItems;
     }
 
-    public OrderEntity(OrderDTO order){
+    public OrderEntity(OrderDTO order) {
         BeanUtils.copyProperties(order, this);
-        if(order != null && order.getClient() != null){
+        if (order != null && order.getClient() != null) {
             this.client = new UserEntity(order.getClient());
         }
+        if(order != null && order.getOrderItem() != null){
+            this.orderItems = order.getOrderItem().stream().map(OrderItemEntity::new).collect(Collectors.toSet());
+        }
+
     }
 
     public Long getId() {
@@ -67,32 +82,8 @@ public class OrderEntity {
         this.client = client;
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        return result;
+    public Set<OrderItemEntity> getOrderItems() {
+        return orderItems;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        OrderEntity other = (OrderEntity) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        return true;
-    }
-
-    
-
 
 }
