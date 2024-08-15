@@ -3,6 +3,7 @@ package com.eduardocaio.inventory_control_project.dto;
 import org.springframework.beans.BeanUtils;
 
 import com.eduardocaio.inventory_control_project.entities.OrderItemEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -18,15 +19,17 @@ public class OrderItemDTO {
     private Long id;
     private ProductDTO item;
     private int quantity;
+
+    @JsonIgnore
     private OrderDTO order;
 
-    public OrderItemDTO(OrderItemEntity order){
-        BeanUtils.copyProperties(order, this);
-        if(order != null && order.getItem() != null){
-            this.item = new ProductDTO(order.getItem());
+    public OrderItemDTO(OrderItemEntity orderItem, OrderDTO orderDTO){
+       BeanUtils.copyProperties(orderItem, this);
+        if(orderItem != null && orderItem.getItem() != null){
+        this.item = new ProductDTO(orderItem.getItem());
         }
-        if(order != null && order.getOrder() != null){
-            this.order = new OrderDTO(order.getOrder());
+        if(orderItem != null && orderItem.getOrder() != null){
+        this.order = orderDTO;
         }
     }
 

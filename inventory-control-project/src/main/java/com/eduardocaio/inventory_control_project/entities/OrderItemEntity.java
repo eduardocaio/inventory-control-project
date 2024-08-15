@@ -3,6 +3,7 @@ package com.eduardocaio.inventory_control_project.entities;
 import org.springframework.beans.BeanUtils;
 
 import com.eduardocaio.inventory_control_project.dto.OrderItemDTO;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,6 +32,7 @@ public class OrderItemEntity {
 
     private int quantity;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "order_id")
     private OrderEntity order;
@@ -42,14 +44,14 @@ public class OrderItemEntity {
         this.order = order;
     }
 
-    public OrderItemEntity(OrderItemDTO order){
-        BeanUtils.copyProperties(order, this);
-        if(order != null && order.getItem() != null){
-            this.item = new ProductEntity(order.getItem());
+    public OrderItemEntity(OrderItemDTO orderItem){
+        BeanUtils.copyProperties(orderItem, this);
+        if(orderItem != null && orderItem.getItem() != null){
+        this.item = new ProductEntity(orderItem.getItem());
         }
-        if(order != null && order.getOrder() != null){
-            this.order = new OrderEntity(order.getOrder());
-        }
+        if(orderItem != null && orderItem.getOrder() != null){
+        this.order = new OrderEntity(orderItem.getOrder());
+        } 
     }
 
     public OrderEntity getOrder() {
@@ -58,6 +60,9 @@ public class OrderItemEntity {
 
     public void setOrder(OrderEntity order) {
         this.order = order;
+        if(!order.getOrderItems().contains(this)){
+            order.addOrderItem(this);
+        }
     }
 
     public Long getId() {

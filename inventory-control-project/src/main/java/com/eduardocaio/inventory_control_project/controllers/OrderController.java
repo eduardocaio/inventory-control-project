@@ -3,6 +3,7 @@ package com.eduardocaio.inventory_control_project.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,8 +26,8 @@ public class OrderController {
     }
 
     @PostMapping
-    public void create(@RequestBody OrderDTO order){
-        orderService.create(order);
+    public ResponseEntity<OrderDTO> create(@RequestBody OrderDTO order){
+        return ResponseEntity.ok().body(orderService.create(order));
     }
 
 }

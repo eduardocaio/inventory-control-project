@@ -3,13 +3,13 @@ package com.eduardocaio.inventory_control_project.entities;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 
 import com.eduardocaio.inventory_control_project.dto.OrderDTO;
-import com.eduardocaio.inventory_control_project.dto.OrderItemDTO;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -37,7 +37,8 @@ public class OrderEntity {
     @JoinColumn(name = "client_id")
     private UserEntity client;
 
-    @OneToMany(mappedBy = "order")
+    @JsonManagedReference
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderItemEntity> orderItems = new HashSet<>();
 
     public OrderEntity(Long id, Date moment, UserEntity client, Set<OrderItemEntity> orderItems) {
@@ -47,15 +48,11 @@ public class OrderEntity {
         this.orderItems = orderItems;
     }
 
-    public OrderEntity(OrderDTO order) {
-        BeanUtils.copyProperties(order, this);
-        if (order != null && order.getClient() != null) {
-            this.client = new UserEntity(order.getClient());
-        }
-        if(order != null && order.getOrderItem() != null){
-            this.orderItems = order.getOrderItem().stream().map(OrderItemEntity::new).collect(Collectors.toSet());
-        }
-
+    public OrderEntity(OrderDTO orderDTO) {
+       BeanUtils.copyProperties(orderDTO, this);
+       if(orderDTO != null && orderDTO.getClient() != null){
+       this.client = new UserEntity(orderDTO.getClient());
+       }
     }
 
     public Long getId() {
@@ -84,6 +81,11 @@ public class OrderEntity {
 
     public Set<OrderItemEntity> getOrderItems() {
         return orderItems;
+    }
+
+    public void addOrderItem(OrderItemEntity orderItem){
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
     }
 
 }

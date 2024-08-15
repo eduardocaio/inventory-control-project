@@ -21,18 +21,17 @@ public class OrderService {
     @Autowired
     OrderItemRepository orderItemRepository;
 
-    public List<OrderDTO> findAll(){
+    public List<OrderDTO> findAll() {
         List<OrderEntity> orders = orderRepository.findAll();
         return orders.stream().map(OrderDTO::new).toList();
     }
 
-    public void create(OrderDTO order){
-        for (OrderItemDTO item : order.getOrderItem()) {
-            orderItemRepository.save(new OrderItemEntity(item));
+    public OrderDTO create(OrderDTO order) {
+        OrderEntity orderEntity = new OrderEntity(order);
+        for(OrderItemDTO orderItem : order.getOrderItems()){
+            orderEntity.addOrderItem(new OrderItemEntity(orderItem));
         }
-
-        orderRepository.save(new OrderEntity(order));
-
-        }
+        
+        return new OrderDTO(orderRepository.save(orderEntity));
     }
-
+}
