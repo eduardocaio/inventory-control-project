@@ -7,6 +7,7 @@ import java.util.Set;
 import org.springframework.beans.BeanUtils;
 
 import com.eduardocaio.inventory_control_project.dto.OrderDTO;
+import com.eduardocaio.inventory_control_project.dto.OrderItemDTO;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -38,7 +39,7 @@ public class OrderEntity {
     private UserEntity client;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "id.order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderItemEntity> orderItems = new HashSet<>();
 
     public OrderEntity(Long id, Date moment, UserEntity client, Set<OrderItemEntity> orderItems) {
@@ -49,11 +50,18 @@ public class OrderEntity {
     }
 
     public OrderEntity(OrderDTO orderDTO) {
-       BeanUtils.copyProperties(orderDTO, this);
+       this.id = orderDTO.getId();
+       this.moment = orderDTO.getMoment();
        if(orderDTO != null && orderDTO.getClient() != null){
        this.client = new UserEntity(orderDTO.getClient());
        }
+    //    for(OrderItemDTO orderItemDTO : orderDTO.getOrderItems()){
+    //         OrderItemEntity orderItemEntity = new OrderItemEntity(orderItemDTO, this);
+    //         addOrderItem(orderItemEntity);
+    //    }
     }
+
+
 
     public Long getId() {
         return id;
@@ -85,7 +93,6 @@ public class OrderEntity {
 
     public void addOrderItem(OrderItemEntity orderItem){
         orderItems.add(orderItem);
-        orderItem.setOrder(this);
     }
 
 }

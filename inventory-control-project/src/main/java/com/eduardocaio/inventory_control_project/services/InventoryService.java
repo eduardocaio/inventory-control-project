@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.eduardocaio.inventory_control_project.dto.InventoryDTO;
+import com.eduardocaio.inventory_control_project.dto.ProductDTO;
 import com.eduardocaio.inventory_control_project.entities.InventoryEntity;
 import com.eduardocaio.inventory_control_project.entities.ProductEntity;
 import com.eduardocaio.inventory_control_project.repositories.InventoryRepository;
 import com.eduardocaio.inventory_control_project.repositories.ProductRepository;
-
 
 @Service
 public class InventoryService {
@@ -33,6 +33,7 @@ public class InventoryService {
 
     public void insert(InventoryDTO inventory) {
         ProductEntity product = productRepository.findById(inventory.getProduct().getId()).get();
+        inventory.setProductId(new ProductDTO(product));
         InventoryEntity inventoryEntity = new InventoryEntity(inventory);
         inventoryEntity.setProduct(product);
         inventoryRepository.save(inventoryEntity);

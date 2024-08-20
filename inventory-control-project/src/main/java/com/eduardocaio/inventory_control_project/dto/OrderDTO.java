@@ -14,7 +14,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-@Getter
 @EqualsAndHashCode(of = "id")
 public class OrderDTO {
 
@@ -28,12 +27,38 @@ public class OrderDTO {
         if (orderEntity != null && orderEntity.getClient() != null) {
             this.client = new UserDTO(orderEntity.getClient());
         }
-        if (orderEntity != null && orderEntity.getOrderItems() != null) {
-            for(OrderItemEntity orderItem : orderEntity.getOrderItems()){
-                this.addOrderItem(orderItem);
-            }
-        }
+        for(OrderItemEntity orderItem : orderEntity.getOrderItems()){
+            OrderItemDTO orderItemDTO = new OrderItemDTO(orderItem, this);
+            addOrderItem(orderItemDTO);
+       }
+
     }
+
+    
+
+    public Long getId() {
+        return id;
+    }
+
+
+
+    public Date getMoment() {
+        return moment;
+    }
+
+
+
+    public UserDTO getClient() {
+        return client;
+    }
+
+
+
+    public Set<OrderItemDTO> getOrderItems() {
+        return orderItems;
+    }
+
+
 
     public void setId(Long id) {
         this.id = id;
@@ -47,9 +72,8 @@ public class OrderDTO {
         this.client = client;
     }
 
-    public void addOrderItem(OrderItemEntity orderItem){
-        OrderItemDTO orderItemDTO = new OrderItemDTO(orderItem, this);
-        orderItems.add(orderItemDTO);
+    public void addOrderItem(OrderItemDTO orderItem) {
+        orderItems.add(orderItem);
     }
 
 }

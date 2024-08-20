@@ -3,15 +3,11 @@ package com.eduardocaio.inventory_control_project.entities;
 import org.springframework.beans.BeanUtils;
 
 import com.eduardocaio.inventory_control_project.dto.OrderItemDTO;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.eduardocaio.inventory_control_project.entities.pk.OrderItemPK;
 
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+
 import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -19,66 +15,59 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "tb_order_item")
 @NoArgsConstructor
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode
 public class OrderItemEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @OneToOne
-    @JoinColumn(name = "product_id")
-    private ProductEntity item;
+    @EmbeddedId
+    private OrderItemPK id = new OrderItemPK();
 
     private int quantity;
 
-    @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    private OrderEntity order;
-
-    public OrderItemEntity(Long id, ProductEntity item, int quantity, OrderEntity order) {
-        this.id = id;
-        this.item = item;
+    public OrderItemEntity(ProductEntity item, int quantity, OrderEntity order) {
+        id.setProduct(item);
         this.quantity = quantity;
-        this.order = order;
+        id.setOrder(order);
     }
 
-    public OrderItemEntity(OrderItemDTO orderItem){
+    public OrderItemEntity(OrderItemDTO orderItem) {
         BeanUtils.copyProperties(orderItem, this);
-        if(orderItem != null && orderItem.getItem() != null){
-        this.item = new ProductEntity(orderItem.getItem());
+        if (orderItem != null && orderItem.getItem() != null) {
+            id.setProduct(new ProductEntity(orderItem.getItem()));
         }
-        if(orderItem != null && orderItem.getOrder() != null){
-        this.order = new OrderEntity(orderItem.getOrder());
-        } 
+        if (orderItem != null && orderItem.getOrder() != null) {
+            id.setOrder(new OrderEntity(orderItem.getOrder()));
+        }
+    }
+
+    public OrderItemEntity(OrderItemDTO orderItem, OrderEntity order) {
+        BeanUtils.copyProperties(orderItem, this);
+        this.id = new OrderItemPK();
+        if (orderItem != null && orderItem.getItem() != null) {
+            id.setProduct(new ProductEntity(orderItem.getItem()));
+        }
+        if (orderItem != null && order != null) {
+            id.setOrder(order);
+        }
     }
 
     public OrderEntity getOrder() {
-        return order;
+        return id.getOrder();
     }
 
     public void setOrder(OrderEntity order) {
-        this.order = order;
-        if(!order.getOrderItems().contains(this)){
+        id.setOrder(order);
+        if (!order.getOrderItems().contains(this)) {
             order.addOrderItem(this);
         }
     }
 
-    public Long getId() {
-        return id;
-    }
 
     public ProductEntity getItem() {
-        return item;
+        return id.getProduct();
     }
 
     public int getQuantity() {
         return quantity;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setQuantity(int quantity) {
