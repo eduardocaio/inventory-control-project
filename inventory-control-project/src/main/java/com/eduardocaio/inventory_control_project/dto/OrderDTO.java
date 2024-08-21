@@ -10,7 +10,6 @@ import com.eduardocaio.inventory_control_project.entities.OrderEntity;
 import com.eduardocaio.inventory_control_project.entities.OrderItemEntity;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor

@@ -1,18 +1,15 @@
 package com.eduardocaio.inventory_control_project.services;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.eduardocaio.inventory_control_project.dto.OrderDTO;
 import com.eduardocaio.inventory_control_project.dto.OrderItemDTO;
-import com.eduardocaio.inventory_control_project.entities.InventoryEntity;
 import com.eduardocaio.inventory_control_project.entities.OrderEntity;
 import com.eduardocaio.inventory_control_project.entities.OrderItemEntity;
-import com.eduardocaio.inventory_control_project.entities.ProductEntity;
+import com.eduardocaio.inventory_control_project.entities.enums.OrderStatus;
 import com.eduardocaio.inventory_control_project.repositories.OrderItemRepository;
 import com.eduardocaio.inventory_control_project.repositories.OrderRepository;
 
@@ -41,6 +38,8 @@ public class OrderService {
             orderEntity.addOrderItem(new OrderItemEntity(orderItemDTO, orderEntity));
             inventoryService.removeItems(orderItemDTO.getItem().getId(), orderItemDTO.getQuantity());
         }
+
+        orderEntity.setOrderStatus(OrderStatus.WAITING_PAYMENT);
 
         return new OrderDTO(orderRepository.save(orderEntity));
 

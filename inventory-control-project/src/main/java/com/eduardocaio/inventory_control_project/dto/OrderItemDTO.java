@@ -2,7 +2,6 @@ package com.eduardocaio.inventory_control_project.dto;
 
 import org.springframework.beans.BeanUtils;
 
-import com.eduardocaio.inventory_control_project.entities.OrderEntity;
 import com.eduardocaio.inventory_control_project.entities.OrderItemEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

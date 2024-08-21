@@ -4,14 +4,15 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.springframework.beans.BeanUtils;
 
 import com.eduardocaio.inventory_control_project.dto.OrderDTO;
-import com.eduardocaio.inventory_control_project.dto.OrderItemDTO;
+import com.eduardocaio.inventory_control_project.entities.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -42,6 +43,11 @@ public class OrderEntity {
     @OneToMany(mappedBy = "id.order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderItemEntity> orderItems = new HashSet<>();
 
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
+    
+
     public OrderEntity(Long id, Date moment, UserEntity client, Set<OrderItemEntity> orderItems) {
         this.id = id;
         this.moment = moment;
@@ -55,10 +61,7 @@ public class OrderEntity {
        if(orderDTO != null && orderDTO.getClient() != null){
        this.client = new UserEntity(orderDTO.getClient());
        }
-    //    for(OrderItemDTO orderItemDTO : orderDTO.getOrderItems()){
-    //         OrderItemEntity orderItemEntity = new OrderItemEntity(orderItemDTO, this);
-    //         addOrderItem(orderItemEntity);
-    //    }
+
     }
 
 
@@ -93,6 +96,14 @@ public class OrderEntity {
 
     public void addOrderItem(OrderItemEntity orderItem){
         orderItems.add(orderItem);
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
 }
