@@ -20,44 +20,35 @@ public class OrderDTO {
     private Date moment;
     private UserDTO client;
     private Set<OrderItemDTO> orderItems = new HashSet<>();
+    private String cep;
 
     public OrderDTO(OrderEntity orderEntity) {
         BeanUtils.copyProperties(orderEntity, this);
         if (orderEntity != null && orderEntity.getClient() != null) {
             this.client = new UserDTO(orderEntity.getClient());
         }
-        for(OrderItemEntity orderItem : orderEntity.getOrderItems()){
+        for (OrderItemEntity orderItem : orderEntity.getOrderItems()) {
             OrderItemDTO orderItemDTO = new OrderItemDTO(orderItem, this);
             addOrderItem(orderItemDTO);
-       }
+        }
 
     }
-
-    
 
     public Long getId() {
         return id;
     }
 
-
-
     public Date getMoment() {
         return moment;
     }
-
-
 
     public UserDTO getClient() {
         return client;
     }
 
-
-
     public Set<OrderItemDTO> getOrderItems() {
         return orderItems;
     }
-
-
 
     public void setId(Long id) {
         this.id = id;
@@ -73,6 +64,14 @@ public class OrderDTO {
 
     public void addOrderItem(OrderItemDTO orderItem) {
         orderItems.add(orderItem);
+    }
+
+    public String getCep() {
+        return cep;
+    }
+
+    public void setCep(String cep) {
+        this.cep = cep;
     }
 
 }

@@ -1,5 +1,11 @@
 package com.eduardocaio.inventory_control_project.controllers;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +27,13 @@ public class OrderController {
     OrderService orderService;
 
     @GetMapping
-    public List<OrderDTO> findAll(){
+    public List<OrderDTO> findAll() {
         return orderService.findAll();
     }
 
     @PostMapping
-    public ResponseEntity<OrderDTO> create(@RequestBody OrderDTO order){
-        
+    public ResponseEntity<OrderDTO> create(@RequestBody OrderDTO order) throws Exception {
+
         return ResponseEntity.ok().body(orderService.create(order));
     }
 

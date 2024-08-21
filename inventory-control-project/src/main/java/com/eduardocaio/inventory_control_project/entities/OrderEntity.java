@@ -4,12 +4,14 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-
 import com.eduardocaio.inventory_control_project.dto.OrderDTO;
 import com.eduardocaio.inventory_control_project.entities.enums.OrderStatus;
+import com.eduardocaio.inventory_control_project.entities.pk.AddressPK;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -46,7 +48,8 @@ public class OrderEntity {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    
+    @Embedded
+    private AddressPK address = new AddressPK();
 
     public OrderEntity(Long id, Date moment, UserEntity client, Set<OrderItemEntity> orderItems) {
         this.id = id;
@@ -56,15 +59,13 @@ public class OrderEntity {
     }
 
     public OrderEntity(OrderDTO orderDTO) {
-       this.id = orderDTO.getId();
-       this.moment = orderDTO.getMoment();
-       if(orderDTO != null && orderDTO.getClient() != null){
-       this.client = new UserEntity(orderDTO.getClient());
-       }
-
+        this.id = orderDTO.getId();
+        this.moment = orderDTO.getMoment();
+        if (orderDTO != null && orderDTO.getClient() != null) {
+            this.client = new UserEntity(orderDTO.getClient());
+        }
+        this.address = new AddressPK();
     }
-
-
 
     public Long getId() {
         return id;
@@ -94,7 +95,7 @@ public class OrderEntity {
         return orderItems;
     }
 
-    public void addOrderItem(OrderItemEntity orderItem){
+    public void addOrderItem(OrderItemEntity orderItem) {
         orderItems.add(orderItem);
     }
 
@@ -104,6 +105,54 @@ public class OrderEntity {
 
     public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public void setCep(String cep){
+        address.setCep(cep);
+    }
+
+    public void setStreet(String street){
+        address.setLogradouro(street);
+    }
+
+    public void setComplement(String complement){
+        address.setComplemento(complement);
+    }
+
+    public void setCity(String city){
+        address.setLocalidade(city);
+    }
+
+    public void setZone(String zone){
+        address.setBairro(zone);
+    }
+
+    public void setUf(String uf){
+        address.setUf(uf);
+    }
+
+    public String getCep(){
+        return address.getCep();
+    }
+
+    public String getStreet(){
+        return address.getLogradouro();
+    }
+
+    public String getComplement(){
+        return address.getComplemento();
+    }
+
+    public String getCity(){
+        return address.getLocalidade();
+    }
+
+    public String getZone(){
+        return address.getBairro();
+    }
+
+    public String getUf(){
+        return address.getUf();
     }
 
 }
