@@ -1,11 +1,8 @@
 package com.eduardocaio.inventory_control_project.controllers;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
+
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +30,11 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderDTO> create(@RequestBody OrderDTO order) throws Exception {
-
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String formattedDate = formatter.format(date);
+        date = formatter.parse(formattedDate);
+        order.setMoment(date);
         return ResponseEntity.ok().body(orderService.create(order));
     }
 

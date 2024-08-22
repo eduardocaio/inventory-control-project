@@ -28,7 +28,7 @@ public class OrderItemDTO {
         this.item = new ProductDTO(orderItem.getItem());
         }
         if(orderItem != null && orderItem.getOrder() != null){
-            this.order = order;
+            this.order = orderDTO;
         } 
     }
 

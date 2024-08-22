@@ -3,7 +3,6 @@ package com.eduardocaio.inventory_control_project.services;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
@@ -17,7 +16,6 @@ import com.eduardocaio.inventory_control_project.entities.OrderEntity;
 import com.eduardocaio.inventory_control_project.entities.OrderItemEntity;
 import com.eduardocaio.inventory_control_project.entities.enums.OrderStatus;
 import com.eduardocaio.inventory_control_project.entities.pk.AddressPK;
-import com.eduardocaio.inventory_control_project.repositories.OrderItemRepository;
 import com.eduardocaio.inventory_control_project.repositories.OrderRepository;
 import com.google.gson.Gson;
 
@@ -26,9 +24,6 @@ public class OrderService {
 
     @Autowired
     OrderRepository orderRepository;
-
-    @Autowired
-    OrderItemRepository orderItemRepository;
 
     @Autowired
     InventoryService inventoryService;
@@ -47,7 +42,16 @@ public class OrderService {
             inventoryService.removeItems(orderItemDTO.getItem().getId(), orderItemDTO.getQuantity());
         }
 
-        URL url = new URL("https://viacep.com.br/ws/"+ order.getCep() +"/json/");
+        SearchCep(order.getCep(), orderEntity);
+
+        orderEntity.setOrderStatus(OrderStatus.WAITING_PAYMENT);
+
+        return new OrderDTO(orderRepository.save(orderEntity));
+
+    }
+
+    private void SearchCep(String cepOrder, OrderEntity orderEntity) throws Exception {
+        URL url = new URL("https://viacep.com.br/ws/" + cepOrder + "/json/");
         URLConnection connection = url.openConnection();
         InputStream is = connection.getInputStream();
         BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
@@ -55,7 +59,7 @@ public class OrderService {
         String cep = "";
         StringBuilder jsonCep = new StringBuilder();
 
-        while((cep = br.readLine()) != null){
+        while ((cep = br.readLine()) != null) {
             jsonCep.append(cep);
         }
 
@@ -66,12 +70,5 @@ public class OrderService {
         orderEntity.setZone(aux.getBairro());
         orderEntity.setCity(aux.getLocalidade());
         orderEntity.setUf(aux.getUf());
-
-
-
-        orderEntity.setOrderStatus(OrderStatus.WAITING_PAYMENT);
-
-        return new OrderDTO(orderRepository.save(orderEntity));
-
     }
 }

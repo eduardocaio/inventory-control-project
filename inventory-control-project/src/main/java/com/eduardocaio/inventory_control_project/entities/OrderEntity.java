@@ -1,5 +1,6 @@
 package com.eduardocaio.inventory_control_project.entities;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -29,7 +29,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "tb_order")
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class OrderEntity {
+public class OrderEntity implements Serializable{
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

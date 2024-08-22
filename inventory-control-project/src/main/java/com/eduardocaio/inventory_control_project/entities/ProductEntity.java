@@ -1,5 +1,7 @@
 package com.eduardocaio.inventory_control_project.entities;
 
+import java.io.Serializable;
+
 import org.springframework.beans.BeanUtils;
 
 import com.eduardocaio.inventory_control_project.dto.ProductDTO;
@@ -18,7 +20,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "tb_product")
 @NoArgsConstructor
-public class ProductEntity {
+public class ProductEntity implements Serializable{
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

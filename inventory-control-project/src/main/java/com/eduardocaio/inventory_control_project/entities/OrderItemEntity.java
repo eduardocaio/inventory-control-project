@@ -1,5 +1,7 @@
 package com.eduardocaio.inventory_control_project.entities;
 
+import java.io.Serializable;
+
 import org.springframework.beans.BeanUtils;
 
 import com.eduardocaio.inventory_control_project.dto.OrderItemDTO;
@@ -16,7 +18,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "tb_order_item")
 @NoArgsConstructor
 @EqualsAndHashCode
-public class OrderItemEntity {
+public class OrderItemEntity implements Serializable{
+    private static final long serialVersionUID = 1L;
 
     @EmbeddedId
     private OrderItemPK id = new OrderItemPK();

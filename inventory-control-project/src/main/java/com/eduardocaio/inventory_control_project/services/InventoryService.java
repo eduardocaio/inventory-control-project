@@ -42,6 +42,7 @@ public class InventoryService {
     @Transactional
     public InventoryDTO removeItems(Long id, int quantity) {
         InventoryEntity item = inventoryRepository.findByIdWithLock(id).get();
+        
         if (item.getQuantity() >= quantity) {
             item.removeItems(quantity);
         }

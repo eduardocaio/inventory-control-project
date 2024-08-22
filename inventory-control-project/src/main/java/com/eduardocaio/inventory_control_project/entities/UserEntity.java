@@ -1,17 +1,27 @@
 package com.eduardocaio.inventory_control_project.entities;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.annotations.ManyToAny;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.eduardocaio.inventory_control_project.dto.LoginRequest;
 import com.eduardocaio.inventory_control_project.dto.UserDTO;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.NoArgsConstructor;
@@ -19,7 +29,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "tb_user")
 @NoArgsConstructor
-public class UserEntity {
+public class UserEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +51,10 @@ public class UserEntity {
     @OneToMany(mappedBy = "client")
     private Set<OrderEntity> orders = new HashSet<>();
 
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "tb_user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<RoleEntity> roles = new HashSet<>();
+
     public UserEntity(Long id, String name, String password, String email, String username) {
         this.id = id;
         this.name = name;
@@ -48,7 +63,7 @@ public class UserEntity {
         this.username = username;
     }
 
-    public UserEntity(UserDTO user){
+    public UserEntity(UserDTO user) {
         BeanUtils.copyProperties(user, this);
     }
 
@@ -92,6 +107,14 @@ public class UserEntity {
         this.username = username;
     }
 
+    public Set<RoleEntity> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<RoleEntity> roles) {
+        this.roles = roles;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -117,6 +140,8 @@ public class UserEntity {
         return true;
     }
 
-    
+    public boolean isLoginCorrect(LoginRequest loginRequest, PasswordEncoder passwordEncoder) {
+        return passwordEncoder.matches(loginRequest.password(), this.password);
+    }
 
 }
