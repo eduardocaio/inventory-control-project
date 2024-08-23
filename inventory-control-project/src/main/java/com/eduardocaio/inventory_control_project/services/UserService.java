@@ -62,4 +62,5 @@ public class UserService {
         userEntity.setRoles(Set.of(role));
         userRepository.save(userEntity);
     }
+
 }
