@@ -43,7 +43,7 @@ public class JwtService {
         }
 
         Instant now = Instant.now();
-        Long expiresIn = 60L;    
+        Long expiresIn = 600L;    
 
         String scopes = user.getRoles().stream().map(RoleEntity::getName).collect(Collectors.joining(" "));
 

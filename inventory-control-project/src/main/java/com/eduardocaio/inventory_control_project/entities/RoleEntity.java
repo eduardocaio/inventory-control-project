@@ -1,5 +1,9 @@
 package com.eduardocaio.inventory_control_project.entities;
 
+import org.springframework.beans.BeanUtils;
+
+import com.eduardocaio.inventory_control_project.dto.RoleDTO;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,7 +22,10 @@ public class RoleEntity {
 
     private String name;
 
-    
+    public RoleEntity(RoleDTO role){
+        BeanUtils.copyProperties(role, this);
+    }
+
 
     public RoleEntity(Long id, String name) {
         this.id = id;

@@ -4,9 +4,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.hibernate.annotations.ManyToAny;
 import org.springframework.beans.BeanUtils;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.eduardocaio.inventory_control_project.dto.LoginRequest;
@@ -116,8 +114,12 @@ public class UserEntity implements Serializable {
         return roles;
     }
 
-    public void setRoles(Set<RoleEntity> roles) {
-        this.roles = roles;
+    public void addRoles(RoleEntity role) {
+        this.roles.add(role);
+    }
+
+    public void removeRoles(RoleEntity role){
+        this.roles.remove(role);
     }
 
     @Override

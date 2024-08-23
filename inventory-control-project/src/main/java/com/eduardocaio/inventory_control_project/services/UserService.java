@@ -1,12 +1,12 @@
 package com.eduardocaio.inventory_control_project.services;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.eduardocaio.inventory_control_project.dto.RoleDTO;
 import com.eduardocaio.inventory_control_project.dto.UserDTO;
 import com.eduardocaio.inventory_control_project.dto.UserSignupDTO;
 import com.eduardocaio.inventory_control_project.entities.RoleEntity;
@@ -26,41 +26,55 @@ public class UserService {
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
 
-    public List<UserDTO> findAll(){
+    public List<UserDTO> findAll() {
         List<UserEntity> users = userRepository.findAll();
         return users.stream().map(UserDTO::new).toList();
     }
 
-    public void create(UserDTO user){
+    public void create(UserDTO user) {
         UserEntity userEntity = new UserEntity(user);
         userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
         userRepository.save(userEntity);
     }
 
-    
-
-    public UserDTO update(UserDTO user, Long id){
+    public UserDTO update(UserDTO user, Long id) {
         UserEntity userEntity = new UserEntity(user);
         userEntity.setId(id);
         return new UserDTO(userRepository.save(userEntity));
     }
 
-    public void delete(Long id){
+    public void delete(Long id) {
         UserEntity user = userRepository.findById(id).get();
         userRepository.delete(user);
     }
 
-    public UserEntity findByEmail(String email){
+    public UserEntity findByEmail(String email) {
         UserEntity user = userRepository.findByEmail(email).get();
         return user;
     }
 
-    public void signup(UserSignupDTO user){
+    public void signup(UserSignupDTO user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         RoleEntity role = roleRepository.findByName("BASIC").get();
         UserEntity userEntity = new UserEntity(user);
-        userEntity.setRoles(Set.of(role));
+        userEntity.addRoles(role);
         userRepository.save(userEntity);
+    }
+
+    public List<RoleDTO> addRole(Long idRole, Long idUser) {
+        RoleEntity role = roleRepository.findById(idRole).get();
+        UserEntity user = userRepository.findById(idUser).get();
+        user.addRoles(role);
+        userRepository.save(user);
+        return user.getRoles().stream().map(RoleDTO::new).toList();
+    }
+
+    public List<RoleDTO> removeRole(Long idRole, Long idUser) {
+        RoleEntity role = roleRepository.findById(idRole).get();
+        UserEntity user = userRepository.findById(idUser).get();
+        user.removeRoles(role);
+        userRepository.save(user);
+        return user.getRoles().stream().map(RoleDTO::new).toList();
     }
 
 }

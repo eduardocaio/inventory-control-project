@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eduardocaio.inventory_control_project.dto.RoleDTO;
 import com.eduardocaio.inventory_control_project.dto.UserDTO;
 import com.eduardocaio.inventory_control_project.services.UserService;
 
@@ -31,6 +32,7 @@ public class UserController {
         return userService.findAll();
     }
 
+
     @PostMapping
     public ResponseEntity<Optional> create(@RequestBody UserDTO user){
         userService.create(user);
@@ -46,6 +48,18 @@ public class UserController {
     public ResponseEntity<Optional> delete(@PathVariable("id") Long id){
         userService.delete(id);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(value = "/add-{idRole}/user-{idUser}")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    public ResponseEntity<List<RoleDTO>> addRole(@PathVariable("idRole") Long idRole, @PathVariable("idUser") Long idUser){
+        return ResponseEntity.ok().body(userService.addRole(idRole, idUser));
+    }
+
+    @DeleteMapping(value = "/remove-{idRole}/user-{idUser}")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    public ResponseEntity<List<RoleDTO>> removeRole(@PathVariable("idRole") Long idRole, @PathVariable("idUser") Long idUser){
+        return ResponseEntity.ok().body(userService.removeRole(idRole, idUser));
     }
 
 }
