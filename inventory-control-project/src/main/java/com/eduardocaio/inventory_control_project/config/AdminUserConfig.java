@@ -31,7 +31,8 @@ public class AdminUserConfig implements CommandLineRunner{
     @Transactional
     public void run(String... args) throws Exception {
      
-        roleRepository.save(new RoleEntity(null, "Admin"));
+        roleRepository.save(new RoleEntity(null, "ADMIN"));
+        roleRepository.save(new RoleEntity(null, "BASIC"));
 
         RoleEntity role = roleRepository.findById(1L).get();
 

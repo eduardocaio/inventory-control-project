@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.eduardocaio.inventory_control_project.dto.LoginRequest;
 import com.eduardocaio.inventory_control_project.dto.UserDTO;
+import com.eduardocaio.inventory_control_project.dto.UserSignupDTO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -64,6 +65,10 @@ public class UserEntity implements Serializable {
     }
 
     public UserEntity(UserDTO user) {
+        BeanUtils.copyProperties(user, this);
+    }
+
+    public UserEntity(UserSignupDTO user) {
         BeanUtils.copyProperties(user, this);
     }
 
