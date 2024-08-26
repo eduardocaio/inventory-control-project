@@ -10,10 +10,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.eduardocaio.inventory_control_project.dto.LoginRequest;
 import com.eduardocaio.inventory_control_project.dto.UserDTO;
 import com.eduardocaio.inventory_control_project.dto.UserSignupDTO;
+import com.eduardocaio.inventory_control_project.entities.enums.StatusUser;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -54,12 +57,16 @@ public class UserEntity implements Serializable {
     @JoinTable(name = "tb_user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roles = new HashSet<>();
 
-    public UserEntity(Long id, String name, String password, String email, String username) {
+    @Enumerated(EnumType.STRING)
+    private StatusUser status;
+
+    public UserEntity(Long id, String name, String password, String email, String username, StatusUser status) {
         this.id = id;
         this.name = name;
         this.password = password;
         this.email = email;
         this.username = username;
+        this.status = status;
     }
 
     public UserEntity(UserDTO user) {
@@ -120,6 +127,16 @@ public class UserEntity implements Serializable {
 
     public void removeRoles(RoleEntity role){
         this.roles.remove(role);
+    }
+
+    
+
+    public StatusUser getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusUser status) {
+        this.status = status;
     }
 
     @Override

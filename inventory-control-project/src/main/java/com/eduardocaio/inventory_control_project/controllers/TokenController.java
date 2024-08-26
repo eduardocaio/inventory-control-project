@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +46,16 @@ public class TokenController {
     public ResponseEntity<Optional> signup(@RequestBody UserSignupDTO user) {
         userService.signup(user);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = "/verify/{code}")
+    public ResponseEntity<LoginResponse> verifyUser(@PathVariable("code") int code, @RequestBody LoginRequest loginRequest){
+        String verification = userService.verifyUser(code, loginRequest);
+        if(verification.equals("Usuário não verificado!") || verification.equals("Excedido tempo de verificação do código!")){
+            return null;
+        }
+        String token = jwtService.generateToken(loginRequest);
+        return ResponseEntity.ok(new LoginResponse(token, 300L));
     }
 
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eduardocaio.inventory_control_project.dto.LoginRequest;
 import com.eduardocaio.inventory_control_project.dto.RoleDTO;
 import com.eduardocaio.inventory_control_project.dto.UserDTO;
 import com.eduardocaio.inventory_control_project.services.UserService;
@@ -61,5 +62,7 @@ public class UserController {
     public ResponseEntity<List<RoleDTO>> removeRole(@PathVariable("idRole") Long idRole, @PathVariable("idUser") Long idUser){
         return ResponseEntity.ok().body(userService.removeRole(idRole, idUser));
     }
+
+    
 
 }

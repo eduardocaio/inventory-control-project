@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.eduardocaio.inventory_control_project.dto.LoginRequest;
 import com.eduardocaio.inventory_control_project.dto.RoleDTO;
 import com.eduardocaio.inventory_control_project.dto.UserDTO;
 import com.eduardocaio.inventory_control_project.dto.UserSignupDTO;
 import com.eduardocaio.inventory_control_project.entities.RoleEntity;
 import com.eduardocaio.inventory_control_project.entities.UserEntity;
+import com.eduardocaio.inventory_control_project.entities.enums.StatusUser;
 import com.eduardocaio.inventory_control_project.repositories.RoleRepository;
 import com.eduardocaio.inventory_control_project.repositories.UserRepository;
 
@@ -24,7 +26,14 @@ public class UserService {
     RoleRepository roleRepository;
 
     @Autowired
+    VerificationUserService verificationService;
+
+    @Autowired
+    EmailImplService emailService;
+
+    @Autowired
     BCryptPasswordEncoder passwordEncoder;
+
 
     public List<UserDTO> findAll() {
         List<UserEntity> users = userRepository.findAll();
@@ -57,8 +66,12 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         RoleEntity role = roleRepository.findByName("BASIC").get();
         UserEntity userEntity = new UserEntity(user);
+        userEntity.setStatus(StatusUser.PENDENTE);
         userEntity.addRoles(role);
-        userRepository.save(userEntity);
+        UserEntity userEntityVerify = userRepository.save(userEntity);
+        int code = verificationService.generateCode(userEntityVerify);
+        emailService.sendMailMessage(userEntity.getEmail(), "Confirmar e-mail - Loja xxxx", "Olá, é uma prazer ter você conosco. Para confirmar seu usuário em nossa loja, favor confirmar seu cadastro com o código: " + code);
+
     }
 
     public List<RoleDTO> addRole(Long idRole, Long idUser) {
@@ -75,6 +88,16 @@ public class UserService {
         user.removeRoles(role);
         userRepository.save(user);
         return user.getRoles().stream().map(RoleDTO::new).toList();
+    }
+
+    public String verifyUser(int code, LoginRequest login){
+        UserEntity userEntity = userRepository.findByEmail(login.username()).get();
+        String verification = verificationService.verifyCode(code, userEntity);
+        if(verification.equals("Usuário verificado!")){
+            userEntity.setStatus(StatusUser.ATIVO);
+            return verification;
+        }
+        return verification;
     }
 
 }
