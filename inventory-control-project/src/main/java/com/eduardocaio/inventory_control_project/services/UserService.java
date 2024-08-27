@@ -54,6 +54,18 @@ public class UserService {
         return new UserDTO(userRepository.save(userEntity));
     }
 
+    public void updateEmail(UserDTO user){
+        UserEntity userEntity = userRepository.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("Usuário " + user.getId() + ", não encontrado!"));
+        if(userRepository.findByEmail(user.getEmail()).isPresent()){
+            throw new DataAlreadyRegisteredException("O e-mail " + user.getEmail()+ ", já está em uso!");
+        }
+        userEntity.setEmail(user.getEmail());
+        userEntity.setStatus(StatusUser.PENDENTE);
+        UserEntity userUpdate = userRepository.save(userEntity);
+        int code = verificationService.generateCode(userUpdate);
+        emailService.sendMailMessage(userEntity.getEmail(), "Confirmar e-mail - Loja xxxx", "Olá, é uma prazer ter você conosco. Para confirmar a alteração do seu e-mail em nossa loja, favor confirmar seu cadastro com o código: " + code);
+    }
+
     public void delete(Long id) {
         UserEntity user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Usuário " + id + ", não encontrado!"));
         userRepository.delete(user);
@@ -93,10 +105,11 @@ public class UserService {
     }
 
     public String verifyUser(int code, LoginRequest login){
-        UserEntity userEntity = userRepository.findByEmail(login.username()).get();
+        UserEntity userEntity = userRepository.findByEmail(login.username()).orElseThrow(() -> new UserNotFoundException("Usuário " + login.username() + ", não encontrado!"));
         String verification = verificationService.verifyCode(code, userEntity);
         if(verification.equals("Usuário verificado!")){
             userEntity.setStatus(StatusUser.ATIVO);
+            userRepository.save(userEntity);
             return verification;
         }
         return verification;

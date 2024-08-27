@@ -38,6 +38,10 @@ public class JwtService {
 
         UserEntity user = userService.findByEmail(loginRequest.username());
 
+        if(jwtRepository.findByUser(user).isPresent()){
+            return jwtRepository.findByUser(user).get().getToken();
+        }
+
         if(user == null || !user.isLoginCorrect(loginRequest, bCryptPasswordEncoder)){
             throw new BadCredentialsException("User or password is invalid!");
         }

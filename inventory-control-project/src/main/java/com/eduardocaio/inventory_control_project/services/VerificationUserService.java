@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.eduardocaio.inventory_control_project.entities.UserEntity;
 import com.eduardocaio.inventory_control_project.entities.VerificationUserEntity;
+import com.eduardocaio.inventory_control_project.exceptions.VerificationUserException;
 import com.eduardocaio.inventory_control_project.repositories.VerificationUserRepository;
 
 @Service
@@ -44,10 +45,10 @@ public class VerificationUserService {
             verificationRepository.delete(verificationUser);
             return "Usuário verificado!";
         }else if(verificationUser.getCode() != code){
-            return "Usuário não verificado!";
+            throw new VerificationUserException("O código informado está incorreto!");
         }else{
             verificationRepository.delete(verificationUser);
-            return "Excedido tempo de verificação do código!";
+            throw new VerificationUserException("O código informado não é mais válido. Favor solicitar o envio de um novo código!");
         }
     }
 
