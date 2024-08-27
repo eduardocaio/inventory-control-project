@@ -1,7 +1,6 @@
 package com.eduardocaio.inventory_control_project.controllers;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +29,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Optional> create(@RequestBody ProductDTO product){
+    public ResponseEntity<Void> create(@RequestBody ProductDTO product){
         productService.create(product);
         return ResponseEntity.ok().build();
     }
@@ -41,7 +40,7 @@ public class ProductController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Optional> delete(@PathVariable("id") Long id){
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id){
         productService.delete(id);
         return ResponseEntity.ok().build();
     }

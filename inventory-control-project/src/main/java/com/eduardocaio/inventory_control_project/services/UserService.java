@@ -13,6 +13,8 @@ import com.eduardocaio.inventory_control_project.dto.UserSignupDTO;
 import com.eduardocaio.inventory_control_project.entities.RoleEntity;
 import com.eduardocaio.inventory_control_project.entities.UserEntity;
 import com.eduardocaio.inventory_control_project.entities.enums.StatusUser;
+import com.eduardocaio.inventory_control_project.exceptions.DataAlreadyRegisteredException;
+import com.eduardocaio.inventory_control_project.exceptions.UserNotFoundException;
 import com.eduardocaio.inventory_control_project.repositories.RoleRepository;
 import com.eduardocaio.inventory_control_project.repositories.UserRepository;
 
@@ -46,14 +48,14 @@ public class UserService {
         userRepository.save(userEntity);
     }
 
-    public UserDTO update(UserDTO user, Long id) {
-        UserEntity userEntity = new UserEntity(user);
-        userEntity.setId(id);
+    public UserDTO update(UserDTO user) {
+        UserEntity userEntity = userRepository.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("Usuário " + user.getId() + ", não encontrado!"));
+        updateData(userEntity, user);
         return new UserDTO(userRepository.save(userEntity));
     }
 
     public void delete(Long id) {
-        UserEntity user = userRepository.findById(id).get();
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Usuário " + id + ", não encontrado!"));
         userRepository.delete(user);
     }
 
@@ -98,6 +100,18 @@ public class UserService {
             return verification;
         }
         return verification;
+    }
+
+    private void updateData(UserEntity userEntity, UserDTO userDTO){
+        if(userDTO.getName() != null){
+            userEntity.setName(userDTO.getName());
+        }
+        if(userDTO.getUsername() != null){
+            if(userRepository.findByUsername(userDTO.getUsername()).isPresent()){
+                throw new DataAlreadyRegisteredException("O nome de usuário " + userDTO.getUsername() + ", já está em uso!");
+            }
+            userEntity.setUsername(userDTO.getUsername());
+        }
     }
 
 }

@@ -1,7 +1,6 @@
 package com.eduardocaio.inventory_control_project.controllers;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eduardocaio.inventory_control_project.dto.LoginRequest;
 import com.eduardocaio.inventory_control_project.dto.RoleDTO;
 import com.eduardocaio.inventory_control_project.dto.UserDTO;
 import com.eduardocaio.inventory_control_project.services.UserService;
@@ -35,18 +33,18 @@ public class UserController {
 
 
     @PostMapping
-    public ResponseEntity<Optional> create(@RequestBody UserDTO user){
+    public ResponseEntity<Void> create(@RequestBody UserDTO user){
         userService.create(user);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<UserDTO> update(@PathVariable("id") Long id, @RequestBody UserDTO user){
-        return ResponseEntity.ok().body(userService.update(user, id));
+    @PutMapping
+    public ResponseEntity<UserDTO> update(@RequestBody UserDTO user){
+        return ResponseEntity.ok().body(userService.update(user));
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Optional> delete(@PathVariable("id") Long id){
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id){
         userService.delete(id);
         return ResponseEntity.ok().build();
     }

@@ -1,6 +1,5 @@
 package com.eduardocaio.inventory_control_project.controllers;
 
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +42,7 @@ public class TokenController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Optional> signup(@RequestBody UserSignupDTO user) {
+    public ResponseEntity<Void> signup(@RequestBody UserSignupDTO user) {
         userService.signup(user);
         return ResponseEntity.ok().build();
     }
